@@ -68,3 +68,13 @@ print(VerdNeg)
 print(FalsoNeg)
 
 print(conf)
+
+# Calcular F1 Score
+accuracy = VerdPos / (VerdPos + FalsoPos)
+recall = VerdPos / (VerdPos + FalsoNeg)
+f1_score = 2 * (accuracy* recall) / (accuracy + recall)
+
+# Imprimir las métricas
+print("Precisión:", accuracy)
+print("Recall:", recall)
+print("F1 Score:", f1_score)
