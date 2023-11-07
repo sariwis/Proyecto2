@@ -130,6 +130,7 @@ tab_2_content = html.Div([
 
     html.Br(),
 
+    #html.Div[(id='probability-plot')]
     dcc.Graph(id='probability-plot'),  # Visualización de probabilidad de graduación o retiro
 ], style={'backgroundColor': '#f2f2f2'})
 
