@@ -44,7 +44,7 @@ html.Div([
 
     html.Br(),
 
-    html.Img(src='gender_percentage.png', alt='Descripción de la imagen'),
+    dcc.Graph(id='vis_1'),
 
     html.Br(),
 
@@ -72,12 +72,12 @@ tab_2_content = html.Div([
         
         html.Div([
             html.Label('Género'),
-            dcc.Dropdown(id='Gen', options=[{'label': 'Femenino', 'value': 0}, {'label': 'Masculino', 'value': 1}], placeholder='Selecciona género', value=0),
+            dcc.Dropdown(id='Gen', options=[{'label': 'Femenino', 'value': 0}, {'label': 'Masculino', 'value': 1}], placeholder='Selecciona género', value=1),
         ], className='four columns', style={'marginTop': '10px'}),
 
         html.Div([
             html.Label('Edad (17-62 años)'),
-            dcc.Input(id='Edad', type='number', placeholder='Ingresa tu edad', min=17, max=62, value=17),
+            dcc.Input(id='Edad', type='number', placeholder='Ingresa tu edad', min=17, max=62,value=17),
         ], className='four columns', style={'marginTop': '10px'}),
     ], className='row'),
 
@@ -86,12 +86,12 @@ tab_2_content = html.Div([
     html.Div([
         html.Div([
             html.Label('¿Cuál fue su nota previa a la universidad? (50-200)'),
-            dcc.Input(id='Not_prev', type='number', placeholder='Ingresa tu nota', min=50, max=200, value=50),
+            dcc.Input(id='Not_prev', type='number', placeholder='Ingresa tu nota', min=50, max=200, value=80),
         ], className='four columns', style={'marginTop': '10px'}),
 
         html.Div([
             html.Label('¿Cuál fue su calificación de admisión? (50-200)'),
-            dcc.Input(id='Not_adm', type='number', placeholder='Ingresa tu nota', min=50, max=200, value=50),
+            dcc.Input(id='Not_adm', type='number', placeholder='Ingresa tu nota', min=50, max=200, value=120),
         ], className='four columns', style={'marginTop': '10px'}),
 
         html.Div([
@@ -107,13 +107,13 @@ tab_2_content = html.Div([
     html.Div([
         html.Div([
             html.Label('Curso'),
-            dcc.Dropdown(id='Curso', options=[{'label': 'Tecnologías de Producción de Biocombustibles', 'value': 1}, {'label': 'Diseño de Animación y Multimedia', 'value': 2 },{'label': 'Servicio Social (turno vespertino)', 'value': 3},{'label': 'Agronomía', 'value': 4},{'label': 'Diseño de Comunicación', 'value': 5},{'label': 'Enfermería Veterinaria', 'value': 6},{'label': 'Ingeniería Informática', 'value': 7},{'label': 'Equinocultura', 'value': 8},{'label': 'Gestión', 'value': 9},{'label': 'Servicio Social', 'value':10},{'label': 'Turismo', 'value':11},{'label': 'Enfermería', 'value':12},{'label': 'Higiene Oral', 'value':13},{'label': 'Dirección de Publicidad y Marketing', 'value':14},{'label': 'Periodismo y Comunicación', 'value':15},{'label': 'Educación Básica', 'value':16},{'label': 'Gestión (turno en la tarde)', 'value':17}], placeholder='Seleccione su curso', value=1),
+            dcc.Dropdown(id='Curso', options=[{'label': 'Tecnologías de Producción de Biocombustibles', 'value': 1}, {'label': 'Diseño de Animación y Multimedia', 'value': 2 },{'label': 'Servicio Social (turno vespertino)', 'value': 3},{'label': 'Agronomía', 'value': 4},{'label': 'Diseño de Comunicación', 'value': 5},{'label': 'Enfermería Veterinaria', 'value': 6},{'label': 'Ingeniería Informática', 'value': 7},{'label': 'Equinocultura', 'value': 8},{'label': 'Gestión', 'value': 9},{'label': 'Servicio Social', 'value':10},{'label': 'Turismo', 'value':11},{'label': 'Enfermería', 'value':12},{'label': 'Higiene Oral', 'value':13},{'label': 'Dirección de Publicidad y Marketing', 'value':14},{'label': 'Periodismo y Comunicación', 'value':15},{'label': 'Educación Básica', 'value':16},{'label': 'Gestión (turno en la tarde)', 'value':17}], placeholder='Seleccione su curso', value=2),
         ], className='six columns', style={'marginTop': '10px'}),
         
         html.Div([
-            html.Label('¿El curso seleccionado fue su primera opción? (0-6)'),
-            dcc.Input(id='Apl_order', type='number', placeholder='Ingresa la orden de aplicación', min=0, max=6, value=1),
-            html.P('Nota: 0 significa que quedó en su opción preferida y 6 significa la menos preferida.', style={'fontSize': '14px', 'color': 'gray'}),
+            html.Label('¿El curso seleccionado fue su primera opción? (1-6)'),
+            dcc.Input(id='Apl_order', type='number', placeholder='Ingresa la orden de aplicación', min=1, max=6, value=1),
+            html.P('Nota: 1 significa que quedó en su opción preferida y 6 significa la menos preferida.', style={'fontSize': '14px', 'color': 'gray'}),
         ], className='six columns', style={'marginTop': '10px'})
     ], className='row'),
 
@@ -124,6 +124,8 @@ tab_2_content = html.Div([
     html.Br(),
 
     html.Button('CALCULA TU RESULTADO', id='submit', n_clicks=0, style={'backgroundColor': '#6C9B37', 'color': 'white', 'fontSize': '18px'}),
+    
+    html.Br(),
     html.Br(),
 
     html.Div(id='output'),
@@ -176,7 +178,7 @@ def render_content(tab):
 
 def update_output(n_clicks, MS, G, AE, PQ, AG, D, C, AO):
     try:
-        if n_clicks > 0:
+        if n_clicks >= 0:
         
             lim_Edad = [16, 30, 45, 63]
             labels_Edad = [1, 2, 3]
@@ -203,10 +205,14 @@ def update_output(n_clicks, MS, G, AE, PQ, AG, D, C, AO):
             fig.update_layout(legend_title_text='Resultado')
             #fig = {'data': [{'x': ['Probabilidad de Graduación'], 'y': [probabilidad.values[1]], 'type': 'bar'}],'layout': {'xaxis': {'title': 'Resultado'}, 'yaxis': {'title': 'Probabilidad'}}}
             #fig = px.bar(df, x='Resultado', y='Probabilidad', text='Probabilidad', height=400)
+
             resp = probabilidad.values[1]*100
+            
             return f'Probabilidad de Graduación: {round(resp, 2)}%', fig
+        
     except Exception as e:
         return f'Error: {str(e)}', {}
+
 
 #Se ejecuta la aplicación
 if __name__ == '__main__':
