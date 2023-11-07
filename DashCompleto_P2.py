@@ -67,17 +67,17 @@ tab_2_content = html.Div([
     html.Div([
         html.Div([
             html.Label('Estado Civil'),
-            dcc.Dropdown(id='MS', options=[{'label': 'Soltero/a', 'value': 1}, {'label': 'Casado/a', 'value': 2}, {'label': 'Divorciado/a', 'value': 4}, {'label': 'Unión Libre', 'value': 5}], placeholder='Selecciona estado civil'),
+            dcc.Dropdown(id='MS', options=[{'label': 'Soltero/a', 'value': 1}, {'label': 'Casado/a', 'value': 2}, {'label': 'Divorciado/a', 'value': 4}, {'label': 'Unión Libre', 'value': 5}], placeholder='Selecciona estado civil', value=1),
         ], className='four columns', style={'marginTop': '10px'}),
         
         html.Div([
             html.Label('Género'),
-            dcc.Dropdown(id='Gen', options=[{'label': 'Femenino', 'value': 0}, {'label': 'Masculino', 'value': 1}], placeholder='Selecciona género'),
+            dcc.Dropdown(id='Gen', options=[{'label': 'Femenino', 'value': 0}, {'label': 'Masculino', 'value': 1}], placeholder='Selecciona género', value=0),
         ], className='four columns', style={'marginTop': '10px'}),
 
         html.Div([
             html.Label('Edad (17-62 años)'),
-            dcc.Input(id='Edad', type='number', placeholder='Ingresa tu edad', min=17, max=62),
+            dcc.Input(id='Edad', type='number', placeholder='Ingresa tu edad', min=17, max=62, value=17),
         ], className='four columns', style={'marginTop': '10px'}),
     ], className='row'),
 
@@ -86,17 +86,17 @@ tab_2_content = html.Div([
     html.Div([
         html.Div([
             html.Label('¿Cuál fue su nota previa a la universidad? (50-200)'),
-            dcc.Input(id='Not_prev', type='number', placeholder='Ingresa tu nota', min=50, max=200),
+            dcc.Input(id='Not_prev', type='number', placeholder='Ingresa tu nota', min=50, max=200, value=50),
         ], className='four columns', style={'marginTop': '10px'}),
 
         html.Div([
             html.Label('¿Cuál fue su calificación de admisión? (50-200)'),
-            dcc.Input(id='Not_adm', type='number', placeholder='Ingresa tu nota', min=50, max=200),
+            dcc.Input(id='Not_adm', type='number', placeholder='Ingresa tu nota', min=50, max=200, value=50),
         ], className='four columns', style={'marginTop': '10px'}),
 
         html.Div([
                 html.Label('¿Usted o su familia asumirá una dedua para costear la universidad?'),
-                dcc.Dropdown(id='Deuda', options=[{'label':'Sí', 'value':1},{'label':'No', 'value':0}], placeholder='Deudor'),
+                dcc.Dropdown(id='Deuda', options=[{'label':'Sí', 'value':1},{'label':'No', 'value':0}], placeholder='Deudor', value=0),
             ], className='four columns', style={'marginTop': '10px'}),
 
     ], className='row'),
@@ -107,12 +107,12 @@ tab_2_content = html.Div([
     html.Div([
         html.Div([
             html.Label('Curso'),
-            dcc.Dropdown(id='Curso', options=[{'label': 'Tecnologías de Producción de Biocombustibles', 'value': 1}, {'label': 'Diseño de Animación y Multimedia', 'value': 2 },{'label': 'Servicio Social (turno vespertino)', 'value': 3},{'label': 'Agronomía', 'value': 4},{'label': 'Diseño de Comunicación', 'value': 5},{'label': 'Enfermería Veterinaria', 'value': 6},{'label': 'Ingeniería Informática', 'value': 7},{'label': 'Equinocultura', 'value': 8},{'label': 'Gestión', 'value': 9},{'label': 'Servicio Social', 'value':10},{'label': 'Turismo', 'value':11},{'label': 'Enfermería', 'value':12},{'label': 'Higiene Oral', 'value':13},{'label': 'Dirección de Publicidad y Marketing', 'value':14},{'label': 'Periodismo y Comunicación', 'value':15},{'label': 'Educación Básica', 'value':16},{'label': 'Gestión (turno en la tarde)', 'value':17}], placeholder='Seleccione su curso'),
+            dcc.Dropdown(id='Curso', options=[{'label': 'Tecnologías de Producción de Biocombustibles', 'value': 1}, {'label': 'Diseño de Animación y Multimedia', 'value': 2 },{'label': 'Servicio Social (turno vespertino)', 'value': 3},{'label': 'Agronomía', 'value': 4},{'label': 'Diseño de Comunicación', 'value': 5},{'label': 'Enfermería Veterinaria', 'value': 6},{'label': 'Ingeniería Informática', 'value': 7},{'label': 'Equinocultura', 'value': 8},{'label': 'Gestión', 'value': 9},{'label': 'Servicio Social', 'value':10},{'label': 'Turismo', 'value':11},{'label': 'Enfermería', 'value':12},{'label': 'Higiene Oral', 'value':13},{'label': 'Dirección de Publicidad y Marketing', 'value':14},{'label': 'Periodismo y Comunicación', 'value':15},{'label': 'Educación Básica', 'value':16},{'label': 'Gestión (turno en la tarde)', 'value':17}], placeholder='Seleccione su curso', value=1),
         ], className='six columns', style={'marginTop': '10px'}),
         
         html.Div([
             html.Label('¿El curso seleccionado fue su primera opción? (0-6)'),
-            dcc.Input(id='Apl_order', type='number', placeholder='Ingresa la orden de aplicación', min=0, max=6),
+            dcc.Input(id='Apl_order', type='number', placeholder='Ingresa la orden de aplicación', min=0, max=6, value=1),
             html.P('Nota: 0 significa que quedó en su opción preferida y 6 significa la menos preferida.', style={'fontSize': '14px', 'color': 'gray'}),
         ], className='six columns', style={'marginTop': '10px'})
     ], className='row'),
