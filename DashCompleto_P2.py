@@ -44,7 +44,7 @@ html.Div([
 
     html.Br(),
 
-    dcc.Graph(id='vis_1'),
+    html.Img(src='gender_percentage.png', alt='Descripción de la imagen'),
 
     html.Br(),
 
@@ -152,103 +152,12 @@ def by_pred(MS, AO, C, PQ, AG, D, G, AE):
 
     return resp
 
-
-import psycopg2
-import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
-import plotly.express as px
-
-# Conectarse a la base de datos PostgreSQL
-engine = psycopg2.connect(
-    dbname="p2",
-    user="postgres",
-    password="proyecto2",
-    host="proyecto2.c9pexl84mjtw.us-east-1.rds.amazonaws.com",
-    port="5432"
-)
-
-# Consulta SQL para obtener los datos de graduados
-query = """
-SELECT G, target
-FROM grado;
-"""
-
-# Ejecutar la consulta y cargar los resultados en un DataFrame
-df = pd.read_sql_query(query, engine)
-
-# Cerrar la conexión a la base de datos
-engine.close()
-
-# Mapear los valores numéricos de género a "Mujer" y "Hombre"
-gender_mapping = {0: 'Mujer', 1: 'Hombre'}
-df['g'] = df['g'].map(gender_mapping)
-
-# Filtrar los datos para obtener solo los graduados (donde 'target' es igual a 1)
-graduados = df[df['target'] == 1]
-
-# Calcular el porcentaje de graduados por género
-gender_percentage = (graduados['g'].value_counts() / len(graduados)) * 100
-
-# Define tus colores personalizados en formato hexadecimal
-custom_colors = ['#1B4D2C', '#66A550']
-
-# Crear un gráfico de barras para comparar los porcentajes de graduados por género
-ax = gender_percentage.plot(kind='bar', color=custom_colors, ylim=(0, 100), width=0.3)
-
-# Personalizar el título
-plt.title('Porcentaje de estudiantes graduados por género', fontsize=15, fontweight='bold')
-
-# Eliminar la etiqueta del eje x
-plt.xlabel('')
-
-# Aumentar el tamaño de fuente y poner en negrita los valores de porcentaje
-for index, value in enumerate(gender_percentage):
-    plt.text(index, value, f'{value:.2f}%', ha='center', va='bottom', fontsize=14, fontweight='bold')
-
-# Ajustar los márgenes
-plt.margins(x=0.2)
-
-# Eliminar el eje y y el marco cuadrado
-ax.get_yaxis().set_visible(False)
-ax.spines['top'].set_visible(False)
-ax.spines['right'].set_visible(False)
-ax.spines['left'].set_visible(False)
-ax.spines['bottom'].set_visible(False)
-
-# Ajustar la rotación de las etiquetas en el eje x
-plt.xticks(rotation=0)
-
-# Guardar la gráfica como una imagen
-plt.savefig('gender_percentage.png')
-
-
 @app.callback(Output('tab-content', 'children'), [Input('tabs', 'value')])
-# Define el contenido de la pestaña 1
-def render_tab_1_content(tab):
-    if tab == 'tab-1':
-        return html.Div([
-            html.H3('Contenido de la Pestaña 1'),
-
-            # Gráfica 1: Porcentaje de graduados por género
-            html.Img(src='C:/Users/ceden/OneDrive/Escritorio/Analítica Computacional/Proyecto 1/Proyecto2/gender_percentage.png', width="80%"),  # Reemplaza 'gender_percentage.png' con la ruta de tu imagen
-            html.P('Esta gráfica muestra el porcentaje de estudiantes graduados por género.'),
-            
-            # Puedes agregar más gráficas o contenido aquí si es necesario
-        ])
-    else:
-        return html.Div([])
-
 def render_content(tab):
     if tab == 'tab-1':
-        return render_tab_1_content(tab)
+        return tab_1_content
     elif tab == 'tab-2':
         return tab_2_content
-
-
 
 @app.callback(
     Output('output', 'children'),
@@ -263,6 +172,7 @@ def render_content(tab):
     State('Curso', 'value'),
     State('Apl_order', 'value')]
 )
+
 def update_output(n_clicks, MS, G, AE, PQ, AG, D, C, AO):
     try:
         if n_clicks > 0:
@@ -296,8 +206,6 @@ def update_output(n_clicks, MS, G, AE, PQ, AG, D, C, AO):
             return f'Probabilidad de Graduación: {round(resp, 2)}%', fig
     except Exception as e:
         return f'Error: {str(e)}', {}
-
-
 
 #Se ejecuta la aplicación
 if __name__ == '__main__':
