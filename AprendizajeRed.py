@@ -86,9 +86,6 @@ conf = confusion_matrix(y_real, y_p)
 print(conf)
 
 
-
-
-
 #Puntaje
 
 
@@ -157,6 +154,14 @@ VerdNeg = conf[0, 0]
 FalsoNeg = conf[1, 0]
 
 print(conf)
+
+# Calcular F1 Score
+recall = VerdPos / (VerdPos + FalsoNeg)
+f1_score = 2 * (accuracy * recall) / (accuracy + recall)
+
+# Imprimir las métricas
+print("Recall:", recall)
+print("F1 Score:", f1_score)
 
 
 
