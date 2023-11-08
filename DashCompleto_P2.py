@@ -36,6 +36,93 @@ app.layout = html.Div([
 
 ], className='container')
 
+########################
+import psycopg2
+import pandas as pd
+import sqlite3
+import pandas as pd
+import plotly.express as px
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+import psycopg2
+
+def porcentaje_graduados_por_curso():
+    #CONECTARSE
+    
+    engine = psycopg2.connect(
+        dbname="p2",
+        user="postgres",
+        password="proyecto2",
+        host="proyecto2.c9pexl84mjtw.us-east-1.rds.amazonaws.com",
+        port="5432"
+    )
+    cursor = engine.cursor()
+
+    query = """
+    SELECT C AS curso,
+        SUM(CASE WHEN target = 1 THEN 1 ELSE 0 END) AS graduados
+    FROM grado
+    WHERE C BETWEEN 1 AND 17  -- Filtrar por cursos del 1 al 17
+    GROUP BY C
+    ORDER BY C;
+    """
+
+    # Mapeo de números de curso a nombres
+    curso_nombre_map = {
+        1: "Biofuel Production Technologies",
+        2: "Animation and Multimedia Design",
+        3: "Social Service (evening attendance)",
+        4: "Agronomy",
+        5: "Communication Design",
+        6: "Veterinary Nursing",
+        7: "Informatics Engineering",
+        8: "Equinculture",
+        9: "Management",
+        10: "Social Service",
+        11: "Tourism",
+        12: "Nursing",
+        13: "Oral Hygiene",
+        14: "Advertising and Marketing Management",
+        15: "Journalism and Communication",
+        16: "Basic Education",
+        17: "Management (evening attendance)"
+    }
+
+    # Ejecutar la consulta SQL y cargar los resultados en un DataFrame
+    df = pd.read_sql_query(query, engine)
+
+    # Mapear los números de curso a nombres
+    df['curso'] = df['curso'].map(curso_nombre_map)
+
+
+    # Calcular el porcentaje de graduados y no graduados
+    df['Graduados'] = (df['graduados'] / df['graduados'].sum()) * 100
+    df['Desertores'] = 100 - df['Graduados']
+
+    # Crear la figura de la gráfica de barras horizontales
+    fig = px.bar(
+        df, y='curso', x=['Graduados', 'Desertores'],
+        labels={'value': 'Porcentaje', 'curso': 'Curso'}, title='Porcentaje de Graduados y Desertores por Curso',
+        color_discrete_map={'Graduados': 'green', 'Desertores': 'lightgreen'},
+        orientation='h'
+    )
+
+    fig.update_layout(
+        width=1000,  # Ancho de la gráfica
+        height=500,  # Altura de la gráfica
+        margin=dict(l=50, r=50, b=50, t=50)  # Márgenes
+    )
+    
+    return dcc.Graph(figure=fig)
+
+
+
+
+
+
+#################
+
 tab_1_content = html.Div([
 
 html.Div([
@@ -44,15 +131,21 @@ html.Div([
 
     html.Br(),
 
-    dcc.Graph(id='vis_1'),
+    html.Div([
+    porcentaje_graduados_por_curso()
+    ]),
 
     html.Br(),
 
-    dcc.Graph(id='vis_2'),
+    html.Div([
+    porcentaje_graduados_por_curso()
+    ]),
 
     html.Br(),
 
-    dcc.Graph(id='vis_3'),
+    html.Div([
+    porcentaje_graduados_por_curso()
+    ]),
 
 ], style={'backgroundColor': '#f2f2f2'})
 
@@ -212,7 +305,6 @@ def update_output(n_clicks, MS, G, AE, PQ, AG, D, C, AO):
         
     except Exception as e:
         return f'Error: {str(e)}', {}
-
 
 #Se ejecuta la aplicación
 if __name__ == '__main__':
