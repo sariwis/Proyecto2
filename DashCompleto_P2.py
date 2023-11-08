@@ -22,6 +22,8 @@ from pgmpy.inference import VariableElimination
 from sklearn.metrics import accuracy_score, confusion_matrix
 import pandas.io.sql as sqlio
 
+psw='proyecto2'
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
 server = app.server
@@ -54,7 +56,7 @@ def porcentaje_graduados_por_curso():
     engine = psycopg2.connect(
         dbname="p2",
         user="postgres",
-        password="proyecto2",
+        password=psw,
         host="proyecto2.c9pexl84mjtw.us-east-1.rds.amazonaws.com",
         port="5432"
     )
@@ -122,7 +124,7 @@ def porcentaje_genero():
     engine = psycopg2.connect(
         dbname="p2",
         user="postgres",
-        password="proyecto2",
+        password=psw,
         host="proyecto2.c9pexl84mjtw.us-east-1.rds.amazonaws.com",
         port="5432"
     )
@@ -170,7 +172,7 @@ def porc_edades():
     engine = psycopg2.connect(
         dbname="p2",
         user="postgres",
-        password="proyecto2",
+        password=psw,
         host="proyecto2.c9pexl84mjtw.us-east-1.rds.amazonaws.com",
         port="5432"
     )
@@ -218,7 +220,7 @@ tab_1_content = html.Div([
 
 html.Div([
     html.H1('Graduación y Deserción Estudiantil: Un Análisis Visual', style={'textAlign': 'center', 'color': 'white', 'backgroundColor': '#6C9B37', 'padding': '20px'}),
-    html.P('A continuación encontrarás 3 visualizaciones que te darán a conocer la situación actual de graduación y deserción en tu universidad', style={'textAlign': 'center', 'fontSize': '20px', 'fontWeight': 'bold', 'color': 'black'}),
+    html.P('A continuación encontrarás tres visualizaciones que te darán a conocer la situación actual de graduación y deserción en tu universidad', style={'textAlign': 'center', 'fontSize': '20px', 'fontWeight': 'bold', 'color': 'black'}),
     ], style={'backgroundColor': '#f2f2f2'}),
 
     html.Br(),
