@@ -20,6 +20,7 @@ import pandas as pd
 import plotly.express as px
 from pgmpy.inference import VariableElimination
 from sklearn.metrics import accuracy_score, confusion_matrix
+import pandas.io.sql as sqlio
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
@@ -109,14 +110,104 @@ def porcentaje_graduados_por_curso():
     )
 
     fig.update_layout(
-        width=900,  # Ancho de la gráfica
+        width=950,  # Ancho de la gráfica
         height=500,  # Altura de la gráfica
         margin=dict(l=50, r=50, b=50, t=50)  # Márgenes
     )
     
     return dcc.Graph(figure=fig)
 
+def porcentaje_genero():
+    # Establecer la conexión a la base de datos
+    engine = psycopg2.connect(
+        dbname="p2",
+        user="postgres",
+        password="proyecto2",
+        host="proyecto2.c9pexl84mjtw.us-east-1.rds.amazonaws.com",
+        port="5432"
+    )
 
+    # Definir la consulta SQL
+    query = """
+    SELECT g AS genero, 
+           SUM(CASE WHEN target = 1 THEN 1 ELSE 0 END) AS graduados
+    FROM grado
+    WHERE g IN (0, 1) -- Filtrar por géneros 0 (Mujer) y 1 (Hombre)
+    GROUP BY g;
+    """
+
+    # Ejecutar la consulta y obtener el resultado como un DataFrame
+    df = sqlio.read_sql_query(query, engine)
+
+    # Reemplazar 0 con "Mujeres" y 1 con "Hombres" en la columna "genero"
+    df['genero'] = df['genero'].map({0: 'Mujeres', 1: 'Hombres'})
+
+    # Calcular el porcentaje de graduados y desertores
+    df['Graduados'] = (df['graduados'] / df['graduados'].sum()) * 100
+    df['Desertores'] = 100 - df['Graduados']
+
+    # Crear la figura de la gráfica de barras
+    fig = px.bar(
+        df, x='genero', y=['Graduados', 'Desertores'],
+        labels={'value': 'Porcentaje', 'genero': 'Género'},
+        title='Porcentaje de Graduados y Desertores por Género',
+        color_discrete_map={'Graduados': 'green', 'Desertores': 'lightgreen'},
+    )
+
+    fig.update_layout(
+        width=950,  # Ancho de la gráfica
+        height=500,  # Altura de la gráfica
+        margin=dict(l=50, r=50, b=50, t=50)  # Márgenes
+    )
+    
+    return dcc.Graph(figure=fig)
+
+def porc_edades():
+    #CONECTARSE
+    import psycopg2
+    import pandas as pd
+    import sqlite3
+    engine = psycopg2.connect(
+        dbname="p2",
+        user="postgres",
+        password="proyecto2",
+        host="proyecto2.c9pexl84mjtw.us-east-1.rds.amazonaws.com",
+        port="5432"
+    )
+    cursor = engine.cursor()
+    query = """
+    SELECT AE AS age,
+       SUM(CASE WHEN target = 1 THEN 1 ELSE 0 END) AS graduados,
+       SUM(CASE WHEN target = 0 THEN 1 ELSE 0 END) AS no_graduados
+    FROM grado
+    GROUP BY AE;
+    """
+    df = pd.read_sql_query(query, engine)
+
+    # Calcular los porcentajes
+    df['Graduados'] = (df['graduados'] / (df['graduados'] + df['no_graduados'])) * 100
+    df['Desertores'] = (df['no_graduados'] / (df['graduados'] + df['no_graduados'])) * 100
+
+    # Mapear los valores de age a etiquetas más descriptivas
+    df['age'] = df['age'].map({1: 'Jóvenes', 2: 'Adultos', 3: 'Mayores'})
+
+    # Crear una nueva columna con el rango de edad
+    df['Rango de Edad'] = df['age'].map({'Jóvenes': '16-30 años', 'Adultos': '31-45 años', 'Mayores': '46-63 años'})
+
+    # Crear la figura de la gráfica de barras con colores verdes y leyenda personalizada
+    fig = px.bar(
+        df, x='Rango de Edad', y=['Graduados', 'Desertores'],
+        labels={'value': 'Porcentaje'}, title='Porcentaje de Graduados y Desertores por Rango de Edad',
+        color_discrete_map={'Graduados': 'green', 'Desertores': 'lightgreen'},
+    )
+
+    fig.update_layout(
+        width=950,  # Ancho de la gráfica
+        height=500,  # Altura de la gráfica
+        margin=dict(l=50, r=50, b=50, t=50)  # Márgenes
+    )
+    
+    return dcc.Graph(figure=fig)
 
 
 
@@ -132,7 +223,7 @@ html.Div([
     html.Br(),
 
     html.Div([
-    porcentaje_graduados_por_curso()
+    porcentaje_genero()
     ]),
 
     html.Br(),
@@ -144,7 +235,7 @@ html.Div([
     html.Br(),
 
     html.Div([
-    porcentaje_graduados_por_curso()
+    porc_edades()
     ]),
 
 ], style={'backgroundColor': '#f2f2f2'})
@@ -289,11 +380,19 @@ def update_output(n_clicks, MS, G, AE, PQ, AG, D, C, AO):
 
             prob_df = pd.DataFrame({'Categoría': ['Graduación', 'Retiro'], 'Probabilidad': [probabilidad.values[1], probabilidad.values[0]]})
 
-            fig = px.bar(prob_df, x='Categoría', y='Probabilidad', text='Probabilidad', height=400,
-                     labels={'Categoría': 'Resultado', 'Probabilidad': 'Probabilidad'},
-                     color='Categoría', title='Probabilidad de Graduación vs. Probabilidad de Retiro')
+            #fig = px.bar(prob_df, x='Categoría', y='Probabilidad', text='Probabilidad', height=600,
+             #        labels={'Categoría': 'Resultado', 'Probabilidad': 'Probabilidad'},
+              #       color='Categoría', title='Probabilidad de Graduación vs. Probabilidad de Retiro')
 
+            colors = {'Graduación': 'green', 'Retiro': 'lightgreen'}
+
+            fig = px.bar(prob_df, x='Categoría', y='Probabilidad', text='Probabilidad', height=600,
+                        labels={'Categoría': 'Resultado', 'Probabilidad': 'Probabilidad'},
+                        color_discrete_map=colors,  # Establecer los colores
+                        title='Probabilidad de Graduación vs. Probabilidad de Retiro')
+            
             # Personaliza el diseño del gráfico
+            fig.update_traces(marker_color=['green', 'lightgreen'])
             fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
             fig.update_layout(legend_title_text='Resultado')
             #fig = {'data': [{'x': ['Probabilidad de Graduación'], 'y': [probabilidad.values[1]], 'type': 'bar'}],'layout': {'xaxis': {'title': 'Resultado'}, 'yaxis': {'title': 'Probabilidad'}}}
