@@ -218,6 +218,7 @@ tab_1_content = html.Div([
 
 html.Div([
     html.H1('Graduación y Deserción Estudiantil: Un Análisis Visual', style={'textAlign': 'center', 'color': 'white', 'backgroundColor': '#6C9B37', 'padding': '20px'}),
+    html.P('A continuación encontrarás 3 visualizaciones que te darán a conocer la situación actual de graduación y deserción en tu universidad', style={'textAlign': 'center', 'fontSize': '20px', 'fontWeight': 'bold', 'color': 'black'}),
     ], style={'backgroundColor': '#f2f2f2'}),
 
     html.Br(),
@@ -237,6 +238,17 @@ html.Div([
     html.Div([
     porc_edades()
     ]),
+    
+    html.Br(),
+    html.Br(),
+
+    html.Div([
+    html.P('¡En la pestaña "Usa nuestra Herramienta" te invitamos a calcular tu probabilidad de graduación!', style={'textAlign': 'center', 'fontSize': '20px', 'fontWeight': 'bold', 'color': 'black'}),
+    ]),
+
+
+    html.Br(),
+    html.Br(),
 
 ], style={'backgroundColor': '#f2f2f2'})
 
