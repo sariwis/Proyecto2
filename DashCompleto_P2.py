@@ -109,7 +109,7 @@ def porcentaje_graduados_por_curso():
     )
 
     fig.update_layout(
-        width=1000,  # Ancho de la gráfica
+        width=900,  # Ancho de la gráfica
         height=500,  # Altura de la gráfica
         margin=dict(l=50, r=50, b=50, t=50)  # Márgenes
     )
